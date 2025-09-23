@@ -3,25 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <link rel="stylesheet" href="style.css">
+    <title>Y-It Tab Workflow Companion</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Stop Wasting Time on [The Painful Task]. Start [The Desired Outcome].</h1>
+    <header class="page-header">
+        <div class="page-header__content">
+            <h1>Y-It Workflow Companion</h1>
+            <p class="page-header__tagline">Keep this page open while you drive tasks in other tabs. Build a repeatable plan, copy ready-made prompts, and mark progress without needing any backend integrations.</p>
+            <div class="page-header__actions">
+                <button id="addBlankStep" class="button button--primary">Add blank step</button>
+                <button id="clearWorkspace" class="button button--ghost">Start from scratch</button>
+            </div>
+        </div>
+        <aside class="page-header__tips">
+            <h2>Quick setup</h2>
+            <ol>
+                <li>Open every tool you will touch today in its own browser tab.</li>
+                <li>Pin this companion page so it always stays visible.</li>
+                <li>Drag the window beside your active work tab or use split-screen mode.</li>
+                <li>As you switch tabs, copy prompts and notes from here to stay consistent.</li>
+            </ol>
+        </aside>
+    </header>
 
-        <h2>[Your Product Name] is a no-code solution that automates [The Process] so you can focus on [What Really Matters]. Launching soon.</h2>
+    <main>
+        <section class="section" aria-labelledby="prompt-library-heading">
+            <div class="section__header">
+                <h2 id="prompt-library-heading">Prompt library</h2>
+                <p class="section__subtitle">Click a card to drop a structured workflow step into your plan. You can still edit every field afterwards.</p>
+            </div>
+            <div id="promptLibrary" class="prompt-grid" role="list"></div>
+        </section>
 
-        <p class="cta-prompt">Be the first to know. Get early access and a 50% lifetime discount.</p>
-        
-        <form action="https://submit-form.com/YOUR_FORMSPARK_ID" class="email-form"> <input type="email" name="email" placeholder="Enter your email address" required>
-            <button type="submit">Get Early Access</button>
-        </form>
+        <section class="section" aria-labelledby="workflow-plan-heading">
+            <div class="section__header">
+                <h2 id="workflow-plan-heading">Your workflow plan</h2>
+                <p class="section__subtitle">Rename each step, assign the tab you will use, adapt the prompt, and record any manual actions to remember.</p>
+            </div>
+            <ol id="stepList" class="step-list"></ol>
+            <div class="section__footer">
+                <button id="exportWorkflow" class="button button--secondary">Copy plan summary</button>
+                <span id="progressSummary" class="progress-summary" aria-live="polite"></span>
+            </div>
+        </section>
 
-        <p class="social-proof">Join 150+ other entrepreneurs who are tired of [The Problem].</p>
-    </div>
+        <section class="section" aria-labelledby="run-mode-heading">
+            <div class="section__header">
+                <h2 id="run-mode-heading">Run mode</h2>
+                <p class="section__subtitle">Use this control panel while working in other tabs. Select a step to reveal the prompt and mark your status.</p>
+            </div>
+            <div class="run-mode">
+                <nav class="run-mode__sidebar" aria-label="Workflow navigator">
+                    <ul id="runStepList" class="run-step-list"></ul>
+                </nav>
+                <article id="runDetail" class="run-detail" aria-live="polite">
+                    <p class="run-detail__placeholder">Choose a step from the list to begin.</p>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <template id="stepTemplate">
+        <li class="step" data-id="">
+            <div class="step__header">
+                <span class="step__number"></span>
+                <input type="text" class="step__title" placeholder="Name this step" aria-label="Step title">
+                <button class="icon-button" data-action="delete" title="Remove this step">×</button>
+            </div>
+            <label class="step__field">
+                <span>Target tab or tool</span>
+                <input type="text" class="step__app" placeholder="e.g. Gmail, Notion, CRM" aria-label="Target application">
+            </label>
+            <label class="step__field">
+                <span>Prompt or script</span>
+                <textarea class="step__prompt" rows="4" aria-label="Prompt text" placeholder="Paste the instructions you will reuse"></textarea>
+                <button class="button button--secondary step__copy">Copy prompt</button>
+            </label>
+            <label class="step__field">
+                <span>Operator notes</span>
+                <textarea class="step__notes" rows="3" aria-label="Operator notes" placeholder="Document manual actions, URLs, or expected outputs."></textarea>
+            </label>
+            <fieldset class="step__status" aria-label="Status selector">
+                <legend>Status</legend>
+                <label><input type="radio" name="status" value="pending"> Pending</label>
+                <label><input type="radio" name="status" value="active"> In progress</label>
+                <label><input type="radio" name="status" value="done"> Done</label>
+            </fieldset>
+        </li>
+    </template>
+
+    <script src="workflow.js" defer></script>
 </body>
 </html>
