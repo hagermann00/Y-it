@@ -1,27 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Y-It Browser Workflow Coach</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="workflow.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Stop Wasting Time on [The Painful Task]. Start [The Desired Outcome].</h1>
-
-        <h2>[Your Product Name] is a no-code solution that automates [The Process] so you can focus on [What Really Matters]. Launching soon.</h2>
-
-        <p class="cta-prompt">Be the first to know. Get early access and a 50% lifetime discount.</p>
-        
-        <form action="https://submit-form.com/YOUR_FORMSPARK_ID" class="email-form"> <input type="email" name="email" placeholder="Enter your email address" required>
-            <button type="submit">Get Early Access</button>
-        </form>
-
-        <p class="social-proof">Join 150+ other entrepreneurs who are tired of [The Problem].</p>
+  <header class="page-header">
+    <div class="page-header__content">
+      <p class="eyebrow">Y-It studio helper</p>
+      <h1>Build and run tab-based workflows from one simple coach.</h1>
+      <p class="lede">
+        Keep this page open while your other apps sit in their own tabs. Describe each step once, copy the suggested prompt,
+        then follow the checklist as you bounce between tools. No extra integrations or APIs required.
+      </p>
+      <div class="header-actions">
+        <button class="button button--primary" id="newWorkflowButton">Start from scratch</button>
+        <button class="button" id="addStepButton">Add blank step</button>
+      </div>
+      <p class="helper-text">
+        Every change saves automatically inside your browser. Close the tab and come back later, everything will still be here.
+      </p>
     </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel" aria-labelledby="workflow-name-label">
+      <header class="panel__header">
+        <h2 id="workflow-name-label">Name your current workflow</h2>
+        <p>Give it a short label so you can recognise it next time.</p>
+      </header>
+      <div class="panel__body">
+        <label class="field">
+          <span class="field__label">Workflow name</span>
+          <input id="workflowNameInput" type="text" placeholder="Example: Onboard a new client" />
+        </label>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="prompt-library">
+      <header class="panel__header">
+        <h2 id="prompt-library">Prompt starters</h2>
+        <p>Drop any of these into a new step. Edit the wording afterwards so it fits your exact situation.</p>
+      </header>
+      <div class="panel__body" id="promptList">
+        <!-- prompts injected by workflow.js -->
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="builder-heading">
+      <header class="panel__header">
+        <div>
+          <h2 id="builder-heading">Describe each step</h2>
+          <p>Tell future-you which tab to visit, what to paste, and what success looks like.</p>
+        </div>
+        <button class="button button--text" id="clearStepsButton">Remove all steps</button>
+      </header>
+      <div class="panel__body" id="stepsContainer">
+        <!-- steps rendered here -->
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="run-heading">
+      <header class="panel__header">
+        <div>
+          <h2 id="run-heading">Run the checklist</h2>
+          <p>Use these controls while switching between your other tabs.</p>
+        </div>
+        <button class="button button--text" id="resetStatusButton">Reset progress</button>
+      </header>
+      <div class="panel__body">
+        <div class="execution" id="execution">
+          <div class="execution__current" id="executionCurrent">
+            <p class="helper-text">Add a step above to begin.</p>
+          </div>
+          <div class="execution__controls">
+            <button class="button" id="prevStepButton">Previous</button>
+            <button class="button button--primary" id="markDoneButton">Mark complete</button>
+            <button class="button" id="nextStepButton">Next</button>
+            <button class="button" id="copyCurrentButton">Copy instructions</button>
+          </div>
+          <ul class="execution__list" id="executionList" aria-live="polite">
+            <!-- list items rendered here -->
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    <p>
+      Tip: keep one browser window dedicated to this coach. Open each required tool in a separate tab, then follow the prompts
+      one by one.
+    </p>
+  </footer>
 </body>
 </html>
