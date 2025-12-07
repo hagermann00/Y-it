@@ -35,6 +35,13 @@ const promptStarters = [
     description: 'Log what happened, what is pending, and what to watch next.',
     suggestion: 'Team chat',
     prompt: `Wrap up the shift with a quick summary:\n\n- Major events resolved (with ticket or case IDs).\n- Items still open, with owners and deadlines.\n- Risks or watch-outs for the next person on shift.\n- Where the full notes live (docs, dashboards, folders).`
+  },
+  {
+    id: 'gemini-brief',
+    title: 'Draft a Gemini-ready brief',
+    description: 'Shape messy notes into a clear ask for Gemini before you paste it over.',
+    suggestion: 'Gemini tab',
+    prompt: `You are preparing a request for Gemini using the notes below. Clean them up into a crisp prompt that:\n\n- Names the goal and the audience.\n- Lists the facts Gemini should rely on.\n- Calls out what to avoid or any constraints.\n- Ends with the exact format you want back.\n\nNotes to organise:`
   }
 ];
 
