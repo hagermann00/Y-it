@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Y-IT Content Automator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .stage-body {
+            max-height: 2000px; /* Increased for larger stage */
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+        }
+        .stage-body.hidden {
+            max-height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-top: 0;
+        }
+        .stage-header {
+            cursor: pointer;
+        }
+        .custom-checkbox {
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: #fff;
+            margin: 0;
+            font: inherit;
+            color: currentColor;
+            width: 1.5em;
+            height: 1.5em;
+            border: 0.15em solid currentColor;
+            border-radius: 0.25em;
+            transform: translateY(-0.075em);
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+        }
+        .dark .custom-checkbox {
+            background-color: #374151; /* gray-700 */
+        }
+        .custom-checkbox::before {
+            content: "";
+            width: 0.85em;
+            height: 0.85em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em #f59e0b; /* amber-500 */
+            transform-origin: bottom left;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+        .custom-checkbox:checked::before {
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body class="bg-neutral-100 dark:bg-neutral-900 text-neutral-800 dark:text-white p-4 sm:p-6 md:p-8 transition-colors duration-300">
+    <div class="max-w-6xl mx-auto">
+        <header class="text-center mb-8 relative">
+            <h1 class="text-4xl font-bold text-amber-500 dark:text-amber-400">Y-IT Content Automator</h1>
+            <p class="text-neutral-500 dark:text-neutral-400 mt-2">A Flexible Workflow Engine</p>
+            <button id="theme-toggle" type="button" class="absolute top-0 right-0 p-2 rounded-full text-neutral-500 hover:bg-neutral-200 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                <svg id="theme-toggle-dark-icon" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                <svg id="theme-toggle-light-icon" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm-.707 10.607a1 1 0 011.414 0l.707-.707a1 1 0 111.414 1.414l-.707.707a1 1 0 01-1.414 0zM3 11a1 1 0 100 2h1a1 1 0 100-2H3z"></path></svg>
+            </button>
+        </header>
+
+        <div id="pipeline" class="space-y-4">
+            <div id="stage-1" class="stage bg-white dark:bg-neutral-800 rounded-lg shadow-lg p-6">
+                <div id="stage-header-1" class="stage-header flex justify-between items-center">
+                    <h2 class="text-2xl font-semibold text-amber-600 dark:text-amber-300">1. Set Up</h2>
+                    <span class="text-neutral-500 dark:text-neutral-400" id="status-1">Pending</span>
+                </div>
+                <div id="stage-body-1" class="stage-body mt-4 space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2 text-amber-600 dark:text-amber-300">Operation Mode</h3>
+                            <div class="flex items-center space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="mode" value="manual" class="form-radio h-4 w-4 text-amber-600 bg-neutral-200 dark:bg-neutral-700 border-neutral-400 dark:border-neutral-600 focus:ring-amber-500" checked>
+                                    <span class="ml-2 text-neutral-600 dark:text-neutral-300">CUA Mode (Free)</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold mb-2 text-amber-600 dark:text-amber-300">Workflow Template</h3>
+                            <select id="workflow-select" class="w-full bg-neutral-200 dark:bg-neutral-700 border border-neutral-400 dark:border-neutral-600 rounded-md p-2 text-neutral-800 dark:text-white focus:ring-2 focus:ring-amber-500">
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="starting-sequence-box" class="bg-blue-100 dark:bg-blue-900/50 border-l-4 border-blue-500 text-blue-800 dark:text-blue-200 p-4 rounded-md">
+                        <div class="flex justify-between items-center mb-2">
+                             <h4 class="font-bold text-lg">Comet Assistant Starting Sequence</h4>
+                             <button id="copy-sequence-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded-md text-sm">Copy Command</button>
+                        </div>
+                        <p id="starting-sequence-text" class="font-mono"></p>
+                    </div>
+
+                    <div>
+                        <label for="topic-input" class="block text-sm font-medium text-neutral-600 dark:text-neutral-300 mb-2">Enter Topic:</label>
+                        <input type="text" id="topic-input" data-cua-target="topic-input" spellcheck="true" class="w-full bg-neutral-200 dark:bg-neutral-700 border border-neutral-400 dark:border-neutral-600 rounded-md p-2 text-neutral-800 dark:text-white focus:ring-2 focus:ring-amber-500" placeholder="e.g., 'The Philosophy of Y-IT'">
+                    </div>
+                    <button id="start-btn" class="w-full bg-amber-500 hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-md transition duration-300">Start Process</button>
+                </div>
+            </div>
+
+            <div id="stage-container"></div>
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const startBtn = document.getElementById('start-btn');
+        const topicInput = document.getElementById('topic-input');
+        const stageContainer = document.getElementById('stage-container');
+        const workflowSelect = document.getElementById('workflow-select');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const startingSequenceText = document.getElementById('starting-sequence-text');
+        
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('color-theme', isDark ? 'dark' : 'light');
+            document.getElementById('theme-toggle-light-icon').classList.toggle('hidden', !isDark);
+            document.getElementById('theme-toggle-dark-icon').classList.toggle('hidden', isDark);
+        });
+        if (document.documentElement.classList.contains('dark')) {
+            document.getElementById('theme-toggle-light-icon').classList.remove('hidden');
+        } else {
+            document.getElementById('theme-toggle-dark-icon').classList.remove('hidden');
+        }
+
+        let topic = '';
+        let stageData = {};
+        const WORKFLOW_TEMPLATES = {
+            yitBooklet: {
+                name: "Y-IT Book Production",
+                startingSequence: `"Fill out the workflow template for book topic: [topic name]"`,
+                stages: {
+                    2: { 
+                        title: "Pre-Research & Analysis", 
+                        service: "Comet Assistant", 
+                        prompts: {
+                           multiLlm: `Begin Multi LLM Research Prompt
+Instruction:
+Use Comet Assistant multi-search workflow with Gemini, Claude, ChatGPT, Grok, and DeepSeek:
+
+Run simultaneous research queries using the prompt body below.
+
+Collect all responses.
+
+Eliminate redundancies only. Do not omit unique facts or perspectives.
+
+Output as a long-form conglomerate response inside this chat (easy copy-paste).
+
+Prompt Body:
+Undertake an exhaustive and critically-biased research investigation into {topic}. Your research must:
+
+Expose Systemic Flaws: Identify and analyze weaknesses, failures, and vulnerabilities in {topic} (financial risks, time sinks, emotional tolls, hidden consequences).
+
+Case Studies: Gather real-world experiences, detailed failures, and exploitative scenarios. Use these as evidence to contrast hype vs. reality.
+
+Predatory Practices: Uncover misleading marketing tactics, schemes, and psychological manipulation. Identify who profits, how, and at what cost.
+
+Counter Claims: For every positive claim, provide evidence-based counter-analysis. Show conditions of failure, hidden costs, and statistical failure likelihood.
+
+Protection Strategies: Offer actionable ways individuals can mitigate risks, avoid scams, and protect themselves.
+
+Factual Integrity: Maintain a deliberately critical stance, but ensure accuracy, credible citations, and verifiable sources.
+
+Source Priority: Industry reports, government stats, investigative journalism, court/legal docs, independent surveys, financial disclosures. Social media and forums may be used for anecdotal evidence only.
+
+Be conscious of guru marketing and affiliate testimonials—use only as biased context.
+
+OUTPUT Instruction: Copy the final result and paste into Y-It Content Automator → Phase 2 → Step 2 → Box 1 (Multi LLM Research).
+
+END OF Multi LLM Research`,
+                           followUp: `Perplexity Follow-Up Prompt
+###Begin Perplexity Follow Up Prompt
+Instruction to Perplexity:
+1)Use this Prompt as a follow up after completing initial "Multi LLM Research"
+Research Focus: Failures and successes in {topic} to build satirical but realistic case studies.
+
+Information to Collect:
+
+Failure Statistics & Patterns
+
+- Verified failure rate
+- Top 5–7 causes of failure
+- Startup costs vs. guru claims
+- Average time to profitability vs. promises
+- Demographics of entrants
+- Typical financial losses
+- Time before most quit
+
+Success Story Analysis
+
+- 3–5 documented successes with revenue figures
+- Unfair advantages (capital, timing, connections, background)
+- Actual startup investments
+- Professional backgrounds
+- Weekly hours worked
+- Advantages they downplay
+
+Market Realities
+
+- Saturation levels
+- Average margins
+- Competition levels
+- CAC (customer acquisition costs)
+- Industry growth/decline
+- Hidden economic barriers
+
+Guru/Education Industry
+
+- Main gurus and course prices
+- Unrealistic claims
+- Student failures despite methods
+- Course industry revenue vs. actual business revenue
+
+Mathematical Realities
+
+- Realistic hourly earnings
+- Break-even thresholds
+- % earning below minimum wage
+- Risk-adjusted comparison to traditional jobs
+- Hidden beginner costs
+
+Character Archetypes
+Look for real examples of:
+
+- Overconfident beginner
+- Expert trying to pivot
+- Side-hustler juggling commitments
+- Over-researcher/under-executor
+- Advantage-holder downplaying privilege
+- Extreme grinder with marginal success
+
+Format:
+
+- Key Statistics
+- Common Failure Patterns
+- Success Story Details
+- Market Realities
+- Guru Industry Analysis
+- Character Archetypes
+- Addendum: 10 case/character studies (incl. 2 unfair-advantage wins + 1 grinder win)
+
+Output Instruction: Copy the follow up result and paste into Y-It Content Automator → Phase 2 → Step 2 → Box 2 (Perplexity Follow Up).
+###END Perplexity Follow Up Prompt
+
+Source Priority:
+Industry reports, government stats, investigative journalism, court/legal docs, independent surveys, financial disclosures. Social media and forums only as supplemental context.
+Be conscious of guru marketing and affiliate testimonials—treat only as biased inputs, not evidence.`
+                        }
+                    },
+                }
+            },
+            standardArticle: {
+                name: "Standard Article",
+                startingSequence: `"Initiate standard article workflow for topic: [topic name]"`,
+                 stages: {
+                    2: { 
+                        title: "Standard Research", 
+                        service: "Perplexity", 
+                        prompts: {
+                           multiLlm: `Research the topic: {topic}`,
+                           followUp: `Find key statistics for {topic}`
+                        }
+                    },
+                }
+            }
+        };
+        
+        const copySequenceBtn = document.getElementById('copy-sequence-btn');
+        copySequenceBtn.addEventListener('click', () => {
+            const fullText = startingSequenceText.textContent;
+            const colonIndex = fullText.indexOf(':');
+            if (colonIndex !== -1) {
+                const textToCopy = fullText.substring(0, colonIndex + 1);
+                navigator.clipboard.writeText(textToCopy);
+                
+                copySequenceBtn.textContent = 'Copied!';
+                setTimeout(() => { copySequenceBtn.textContent = 'Copy Command'; }, 2000);
+            }
+        });
+
+        function updateStartingSequence() {
+            const selectedWorkflowKey = workflowSelect.value;
+            const sequenceTemplate = WORKFLOW_TEMPLATES[selectedWorkflowKey].startingSequence;
+            startingSequenceText.textContent = sequenceTemplate;
+            const topicLabel = document.querySelector('label[for="topic-input"]');
+            topicLabel.textContent = selectedWorkflowKey === 'yitBooklet' ? 'Enter Book Topic:' : 'Enter Article Topic:';
+        }
+
+        function populateWorkflows() {
+            Object.keys(WORKFLOW_TEMPLATES).forEach(key => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = WORKFLOW_TEMPLATES[key].name;
+                workflowSelect.appendChild(option);
+            });
+            updateStartingSequence(); // Set initial value
+        }
+        
+        workflowSelect.addEventListener('change', updateStartingSequence);
+        
+        populateWorkflows();
+
+        startBtn.addEventListener('click', () => {
+            if (topicInput.value.trim() === '') return;
+            topic = topicInput.value.replace(/\s+/g, '_').trim();
+            
+            const selectedWorkflow = WORKFLOW_TEMPLATES[workflowSelect.value];
+            
+            document.getElementById('stage-body-1').classList.add('hidden');
+            document.querySelector('#stage-header-1 h2').textContent = `1. Set Up`;
+            document.getElementById('status-1').textContent = 'Completed';
+            document.getElementById('status-1').className = 'text-amber-500 dark:text-amber-400';
+            document.getElementById('stage-header-1').addEventListener('click', () => document.getElementById('stage-body-1').classList.toggle('hidden'));
+
+            startBtn.disabled = true;
+            topicInput.disabled = true;
+            workflowSelect.disabled = true;
+            document.querySelector('input[name="mode"]').disabled = true;
+            
+            renderStage(2, selectedWorkflow.stages[2]);
+        });
+
+        function renderStage(stageNum, config) {
+            if (!config) {
+                 const finalHTML = `<div class="stage bg-white dark:bg-neutral-800 rounded-lg shadow-lg p-6 text-center">
+                    <h2 class="text-2xl font-semibold text-amber-500 dark:text-amber-400">Workflow Paused</h2>
+                    <p class="text-neutral-600 dark:text-neutral-300 mt-2">Stage 2 complete. Awaiting directive for Stage 3.</p>
+                    <button id="restart-btn" class="mt-4 bg-neutral-500 hover:bg-neutral-600 text-white font-bold py-2 px-4 rounded-md">Start New Project</button>
+                </div>`;
+                 stageContainer.insertAdjacentHTML('beforeend', finalHTML);
+                 document.getElementById('restart-btn').addEventListener('click', () => location.reload());
+                 return;
+            }
+
+            const prompt1Text = config.prompts.multiLlm.replace(/{topic}/g, topicInput.value);
+            const prompt2Text = config.prompts.followUp.replace(/{topic}/g, topicInput.value);
+
+            const stageHTML = `
+                <div id="stage-${stageNum}" class="stage bg-white dark:bg-neutral-800 rounded-lg shadow-lg p-6">
+                    <div id="stage-header-${stageNum}" class="stage-header flex justify-between items-center">
+                        <h2 class="text-2xl font-semibold text-amber-600 dark:text-amber-300">${stageNum}. ${config.title}</h2>
+                        <span class="text-neutral-500 dark:text-neutral-400" id="status-${stageNum}">Pending</span>
+                    </div>
+                    <div id="stage-body-${stageNum}" class="stage-body mt-4">
+                        <div class="bg-amber-100 dark:bg-amber-900/50 border-l-4 border-amber-500 text-amber-800 dark:text-amber-200 p-3 rounded-md mb-6">
+                            <p><span class="font-bold">Current Topic:</span> ${topicInput.value}</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="md:col-span-1 bg-neutral-200 dark:bg-neutral-800 p-4 rounded-lg border-l-4 border-amber-500">
+                                <h3 class="text-2xl font-bold text-center mb-4">DIRECTIONS</h3>
+                                <ol class="space-y-4 text-sm list-decimal list-inside">
+                                    <li><strong>COPY PROMPT 1:</strong> Click the first 'Copy Prompt' button.</li>
+                                    <li><strong>PASTE & EXECUTE 1:</strong> Paste the prompt into the Comet Assistant's chat, then command it to execute the multi-LLM research task.</li>
+                                    <li><strong>PASTE RESULT 1:</strong> Paste the conglomerate response into **Box 1**.</li>
+                                    <li><strong>SAVE RESULT 1:</strong> Click the 'Save' button below **Box 1**.</li>
+                                    <li><strong>COPY PROMPT 2:</strong> Click the second 'Copy Prompt' button.</li>
+                                    <li><strong>PASTE & EXECUTE 2:</strong> Paste the prompt into the Comet Assistant's chat, then command it to execute the follow-up task.</li>
+                                    <li><strong>PASTE RESULT 2:</strong> Paste the follow-up response into **Box 2**.</li>
+                                    <li><strong>SAVE RESULT 2:</strong> Click the 'Save' button below **Box 2**.</li>
+                                    <li><strong>ADVANCE:</strong> Click 'Continue'.</li>
+                                </ol>
+                            </div>
+                            <div class="md:col-span-2 space-y-6">
+                                <div class="space-y-2">
+                                    <p class="font-semibold text-neutral-600 dark:text-neutral-300">1. Multi LLM Research Prompt</p>
+                                    <textarea readonly class="prompt-display w-full h-28 bg-neutral-100 dark:bg-neutral-900 border border-neutral-400 dark:border-neutral-600 rounded-md p-2 font-mono text-sm">${prompt1Text}</textarea>
+                                    <button data-prompt-text="${encodeURIComponent(prompt1Text)}" class="copy-btn bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-600 dark:hover:bg-neutral-700 font-bold py-2 px-4 rounded-lg">Copy Prompt 1</button>
+                                </div>
+                                <div class="space-y-2">
+                                    <p class="font-semibold text-neutral-600 dark:text-neutral-300">Box 1: Multi LLM Research</p>
+                                    <textarea id="result-input-1" class="w-full h-32 bg-neutral-200 dark:bg-neutral-700 border border-neutral-400 dark:border-neutral-600 rounded-md p-2 focus:ring-2 focus:ring-amber-500"></textarea>
+                                    <div class="flex justify-between items-center mt-2">
+                                        <div>
+                                            <button data-target="result-input-1" class="upload-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg">Upload</button>
+                                            <input type="file" class="upload-file-input hidden" accept=".txt">
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button data-target="result-input-1" data-type="MultiLLM_Research" class="save-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <p class="font-semibold text-neutral-600 dark:text-neutral-300">2. Perplexity Follow-Up Prompt</p>
+                                    <textarea readonly class="prompt-display w-full h-28 bg-neutral-100 dark:bg-neutral-900 border border-neutral-400 dark:border-neutral-600 rounded-md p-2 font-mono text-sm">${prompt2Text}</textarea>
+                                    <button data-prompt-text="${encodeURIComponent(prompt2Text)}" class="copy-btn bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-600 dark:hover:bg-neutral-700 font-bold py-2 px-4 rounded-lg">Copy Follow-Up Prompt</button>
+                                </div>
+                                <div class="space-y-2">
+                                    <p class="font-semibold text-neutral-600 dark:text-neutral-300">Box 2: Perplexity Follow Up</p>
+                                    <textarea id="result-input-2" class="w-full h-32 bg-neutral-200 dark:bg-neutral-700 border border-neutral-400 dark:border-neutral-600 rounded-md p-2 focus:ring-2 focus:ring-amber-500"></textarea>
+                                     <div class="flex justify-between items-center mt-2">
+                                        <div>
+                                            <button data-target="result-input-2" class="upload-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg">Upload</button>
+                                            <input type="file" class="upload-file-input hidden" accept=".txt">
+                                        </div>
+                                        <div class="flex space-x-2">
+                                            <button data-target="result-input-2" data-type="FollowUp_Research" class="save-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="next-stage-btn w-full bg-amber-500 hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-md">Continue</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            stageContainer.innerHTML = stageHTML;
+            
+            const newStage = document.getElementById(`stage-${stageNum}`);
+            
+            newStage.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const textToCopy = decodeURIComponent(btn.dataset.promptText);
+                    navigator.clipboard.writeText(textToCopy);
+                });
+            });
+
+             newStage.querySelectorAll('.upload-btn').forEach(button => {
+                const fileInput = button.nextElementSibling;
+                const targetId = button.dataset.target;
+                button.addEventListener('click', () => fileInput.click());
+                fileInput.addEventListener('change', (event) => {
+                     const file = event.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        document.getElementById(targetId).value = e.target.result;
+                    };
+                    reader.readAsText(file);
+                });
+            });
+
+            function getTimestamp() {
+                const d = new Date();
+                const date = d.toISOString().slice(0, 10);
+                const time = d.toTimeString().slice(0, 8).replace(/:/g, "-");
+                return `${date}_${time}`;
+            }
+
+            newStage.querySelectorAll('.save-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+                    const dataType = button.dataset.type;
+                    const content = document.getElementById(targetId).value;
+                    if (content.trim() === '') {
+                        alert('Nothing to save.');
+                        return;
+                    }
+                    const timestamp = getTimestamp();
+                    const filename = `${topic}_${timestamp}_${dataType}.txt`;
+                    
+                    const element = document.createElement('a');
+                    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+                    element.setAttribute('download', filename);
+                    element.style.display = 'none';
+                    document.body.appendChild(element);
+                    element.click();
+                    document.body.removeChild(element);
+                });
+            });
+
+            newStage.querySelector('.next-stage-btn').addEventListener('click', () => {
+                const result1 = newStage.querySelector(`#result-input-1`).value;
+                const result2 = newStage.querySelector(`#result-input-2`).value;
+
+                if(result1.trim() === '' || result2.trim() === '') {
+                    alert('Both result boxes must be filled to continue.');
+                    return;
+                }
+
+                stageData[stageNum] = {
+                    multiLlmResearch: result1,
+                    followUpResearch: result2
+                };
+
+                newStage.querySelector(`#stage-body-${stageNum}`).classList.add('hidden');
+                document.querySelector(`#stage-header-${stageNum} h2`).textContent = `${stageNum}. ${config.title}`;
+                document.getElementById(`status-${stageNum}`).textContent = 'Completed';
+                document.getElementById(`status-${stageNum}`).className = 'text-amber-500 dark:text-amber-400';
+                
+                renderStage(stageNum + 1, WORKFLOW_TEMPLATES.yitBooklet.stages);
+            });
+        }
+    });
+    </script>
+</body>
+</html>
