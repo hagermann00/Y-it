@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>y-it | The Anti-Guru Book Series</title>
+    <meta name="description" content="Before you bet your savings on that side hustle, maybe check the math first. Data-driven reality checks on trending business opportunities.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --yellow: #FFD700;
+            --yellow-muted: #C4A000;
+            --black: #1A1A2E;
+            --dark: #12121f;
+            --red: #E63946;
+            --teal: #2A9D8F;
+            --gray: #6C757D;
+            --gray-light: #9CA3AF;
+            --cream: #FAF9F6;
+            --coming-soon-overlay: rgba(26, 26, 46, 0.85);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--black);
+            color: var(--cream);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Archivo Black', sans-serif;
+        }
+        
+        .mono {
+            font-family: 'Space Mono', monospace;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Coming Soon Banner */
+        .coming-soon-banner {
+            background: linear-gradient(90deg, var(--yellow) 0%, var(--yellow-muted) 100%);
+            color: var(--black);
+            text-align: center;
+            padding: 12px 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        
+        .coming-soon-banner span {
+            opacity: 0.7;
+        }
+        
+        /* Navigation */
+        nav {
+            background: var(--black);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+            padding: 20px 0;
+        }
+        
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 2.2rem;
+            color: var(--cream);
+            text-decoration: none;
+            display: flex;
+            align-items: baseline;
+            gap: 2px;
+        }
+        
+        .logo .y {
+            color: var(--yellow);
+        }
+        
+        .logo .dash {
+            color: var(--gray);
+        }
+        
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--yellow);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 80px 0;
+            background: 
+                radial-gradient(ellipse at 30% 70%, rgba(255, 215, 0, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 30%, rgba(42, 157, 143, 0.04) 0%, transparent 50%),
+                var(--black);
+        }
+        
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+        
+        .hero-content h1 .line {
+            display: block;
+        }
+        
+        .hero-content h1 .yellow {
+            color: var(--yellow);
+        }
+        
+        .hero-content h1 .dim {
+            color: var(--gray);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.15rem;
+            color: var(--gray-light);
+            margin-bottom: 32px;
+            max-width: 500px;
+        }
+        
+        .hero-subtitle strong {
+            color: var(--cream);
+        }
+        
+        /* Question Stats - softer approach */
+        .question-block {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .question-block h3 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--yellow);
+            margin-bottom: 12px;
+        }
+        
+        .question-block p {
+            color: var(--gray-light);
+            font-size: 0.95rem;
+        }
+        
+        .question-block .discover {
+            display: inline-block;
+            margin-top: 12px;
+            color: var(--teal);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        
+        /* Email Capture */
+        .email-capture {
+            background: rgba(255, 215, 0, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            padding: 28px;
+            border-radius: 8px;
+        }
+        
+        .email-capture h3 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .email-capture p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+        
+        .email-form {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .email-form input {
+            flex: 1;
+            padding: 14px 16px;
+            background: var(--black);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: var(--cream);
+            font-size: 0.95rem;
+            border-radius: 4px;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .email-form input:focus {
+            outline: none;
+            border-color: var(--yellow);
+        }
+        
+        .btn-primary {
+            background: var(--yellow);
+            color: var(--black);
+            border: none;
+            padding: 14px 24px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .btn-primary:hover {
+            background: #e6c200;
+            transform: translateY(-1px);
+        }
+        
+        /* Hero Visual - PosiBot Sidebar */
+        .hero-visual {
+            position: relative;
+        }
+        
+        .posibot-container {
+            position: relative;
+            background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .posibot-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .ai-sidebar-text {
+            position: absolute;
+            top: 50%;
+            right: 15%;
+            transform: translateY(-50%);
+            background: rgba(26, 26, 46, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            max-width: 200px;
+        }
+        
+        .ai-sidebar-text p {
+            font-size: 0.85rem;
+            color: var(--cream);
+            font-style: italic;
+        }
+        
+        .ai-sidebar-text cite {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.7rem;
+            color: var(--teal);
+        }
+        
+        /* Book 1 Feature */
+        .book-feature {
+            padding: 100px 0;
+            background: var(--cream);
+            color: var(--black);
+        }
+        
+        .book-feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+        
+        .book-cover-display {
+            position: relative;
+        }
+        
+        .book-cover-display img {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        
+        .book-badge {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            background: var(--teal);
+            color: white;
+            padding: 10px 16px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+        
+        .book-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            color: var(--black);
+        }
+        
+        .book-info .subtitle {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 24px;
+        }
+        
+        .book-info p {
+            color: var(--gray);
+            margin-bottom: 16px;
+            font-size: 1rem;
+        }
+        
+        .book-cta {
+            margin-top: 30px;
+        }
+        
+        .btn-dark {
+            background: var(--black);
+            color: var(--yellow);
+            border: none;
+            padding: 16px 32px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-dark:hover {
+            background: var(--dark);
+        }
+        
+        /* Coming Soon Grid */
+        .coming-soon-section {
+            padding: 100px 0;
+            background: var(--dark);
+            position: relative;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+        
+        .section-header p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .hustles-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .hustle-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 24px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .hustle-card:hover {
+            border-color: rgba(255, 215, 0, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .hustle-card.grayed {
+            opacity: 0.5;
+        }
+        
+        .hustle-card.grayed:hover {
+            opacity: 0.7;
+        }
+        
+        .hustle-category {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--gray);
+            margin-bottom: 12px;
+        }
+        
+        .hustle-card h3 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: var(--cream);
+        }
+        
+        .hustle-card p {
+            font-size: 0.8rem;
+            color: var(--gray);
+            line-height: 1.5;
+        }
+        
+        .hustle-status {
+            margin-top: 16px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .status-available {
+            color: var(--teal);
+        }
+        
+        .status-soon {
+            color: var(--yellow-muted);
+        }
+        
+        .status-planned {
+            color: var(--gray);
+        }
+        
+        /* Characters Teaser */
+        .characters-teaser {
+            padding: 80px 0;
+            background: var(--black);
+            border-top: 1px solid rgba(255, 215, 0, 0.1);
+        }
+        
+        .characters-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+        
+        .character-mini {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            padding: 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+        
+        .character-icon {
+            font-size: 2.5rem;
+            flex-shrink: 0;
+        }
+        
+        .character-mini h3 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+        
+        .character-mini .role {
+            font-size: 0.75rem;
+            color: var(--teal);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+        
+        .character-mini p {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        /* Footer */
+        footer {
+            padding: 50px 0 30px;
+            background: var(--dark);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-logo {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 1.5rem;
+            color: var(--cream);
+        }
+        
+        .footer-logo .y {
+            color: var(--yellow);
+        }
+        
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--cream);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hustles-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-grid,
+            .book-feature-grid,
+            .characters-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            
+            .hustles-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .email-form {
+                flex-direction: column;
+            }
+            
+            .hero-visual {
+                order: -1;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .hero-content, .hero-visual {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        .hero-visual {
+            animation-delay: 0.15s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Coming Soon Banner -->
+    <div class="coming-soon-banner">
+        🚧 Site Under Construction <span>— Book 1 Available Now, Full Platform Coming Q1 2026</span>
+    </div>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">
+                <span class="y">y</span><span class="dash">-</span>it
+            </a>
+            <div class="nav-status">
+                <span class="status-dot"></span>
+                <span>Building in public</span>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <h1>
+                        <span class="line">Before you bet</span>
+                        <span class="line">your savings on</span>
+                        <span class="line"><span class="yellow">that side hustle</span><span class="dim">—</span></span>
+                        <span class="line dim">maybe check the math.</span>
+                    </h1>
+                    
+                    <p class="hero-subtitle">
+                        Data-driven reality checks on trending business opportunities. 
+                        <strong>No hype. No courses. Just the numbers the gurus hide.</strong>
+                    </p>
+                    
+                    <div class="question-block">
+                        <h3>What if you could see the real odds first?</h3>
+                        <p>
+                            Every "life-changing opportunity" has numbers attached. Failure rates. 
+                            Hidden costs. The gap between marketing and reality. We find them.
+                        </p>
+                        <span class="discover">→ Discover what the $997 courses won't tell you</span>
+                    </div>
+                    
+                    <div class="email-capture">
+                        <h3>Get Chapter 2 Free</h3>
+                        <p>"The Math Nobody Shares" — see the real numbers before you start.</p>
+                        <form class="email-form" action="#" method="post">
+                            <input type="email" placeholder="your@email.com" required>
+                            <button type="submit" class="btn-primary">Send It</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="hero-visual">
+                    <div class="posibot-container">
+                        <img src="posibot-sidebar.jpg" alt="PosiBot - Your eternally optimistic AI companion" class="posibot-image">
+                        <div class="ai-sidebar-text">
+                            <p>"Statistics are for OTHER people! You're different! 🚀"</p>
+                            <cite>— PosiBot 3000</cite>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Book 1 Feature -->
+    <section class="book-feature">
+        <div class="container">
+            <div class="book-feature-grid">
+                <div class="book-cover-display">
+                    <img src="hero-disaster.png" alt="Why Your Dropship Probably Will Fail - Y-IT Book 1">
+                    <span class="book-badge">Book 1 • Available Now</span>
+                </div>
+                
+                <div class="book-info">
+                    <h2>Dropshipping</h2>
+                    <p class="subtitle">The e-commerce dream that drowns most dreamers.</p>
+                    <p>
+                        Everyone and their cousin tried dropshipping in 2020. 
+                        Most lost money. Some lost a lot. Very few made it work.
+                    </p>
+                    <p>
+                        This is the complete breakdown — startup costs, realistic timelines, 
+                        what the successful ones actually did differently, and whether 
+                        it's even worth considering in 2026.
+                    </p>
+                    <div class="book-cta">
+                        <a href="#" class="btn-dark">Get the Full Guide</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Coming Soon Grid -->
+    <section class="coming-soon-section">
+        <div class="container">
+            <div class="section-header">
+                <h2><span style="color: var(--yellow)">y-it</span> Series</h2>
+                <p>Every hyped opportunity gets the same treatment: hard data, real stories, honest assessment.</p>
+            </div>
+            
+            <div class="hustles-grid">
+                <!-- Available -->
+                <div class="hustle-card">
+                    <div class="hustle-category">E-Commerce</div>
+                    <h3>Dropshipping</h3>
+                    <p>The store-without-inventory model that flooded TikTok. Find out what actually happens.</p>
+                    <div class="hustle-status status-available">✓ Available Now</div>
+                </div>
+                
+                <!-- Coming Soon - Diverse Types -->
+                <div class="hustle-card grayed">
+                    <div class="hustle-category">Investment</div>
+                    <h3>Crypto Day Trading</h3>
+                    <p>Charts, leverage, and "financial freedom." The math behind the moonshots.</p>
+                    <div class="hustle-status status-soon">Coming 2026</div>
+                </div>
+                
+                <div class="hustle-card grayed">
+                    <div class="hustle-category">Network</div>
+                    <h3>MLM / Network Marketing</h3>
+                    <p>The pyramid that insists it's not a pyramid. Income disclosures decoded.</p>
+                    <div class="hustle-status status-soon">Coming 2026</div>
+                </div>
+                
+                <div class="hustle-card grayed">
+                    <div class="hustle-category">Real Estate</div>
+                    <h3>House Flipping</h3>
+                    <p>HGTV makes it look easy. Renovation budgets say otherwise.</p>
+                    <div class="hustle-status status-soon">Coming 2026</div>
+                </div>
+                
+                <div class="hustle-card grayed">
+                    <div class="hustle-category">Content</div>
+                    <h3>YouTube / Content Creation</h3>
+                    <p>The creator economy promise vs. the algorithmic reality.</p>
+                    <div class="hustle-status status-planned">Planned</div>
+                </div>
+                
+                <div class="hustle-card grayed">
+                    <div class="hustle-category">Service</div>
+                    <h3>Coaching / Consulting</h3>
+                    <p>Selling expertise you may or may not have. The credibility trap.</p>
+                    <div class="hustle-status status-planned">Planned</div>
+                </div>
+                
+                <div class="hustle-card grayed">
+                    <div class="hustle-category">Speculation</div>
+                    <h3>NFTs & Digital Assets</h3>
+                    <p>When JPEGs cost more than houses. A post-mortem.</p>
+                    <div class="hustle-status status-planned">Planned</div>
+                </div>
+                
+                <div class="hustle-card grayed">
+                    <div class="hustle-category">Tech</div>
+                    <h3>AI Tool Monetization</h3>
+                    <p>Everyone's building AI wrappers. Who's actually making money?</p>
+                    <div class="hustle-status status-planned">Planned</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Characters Teaser -->
+    <section class="characters-teaser">
+        <div class="container">
+            <div class="characters-grid">
+                <div class="character-mini">
+                    <span class="character-icon">👨‍💼</span>
+                    <div>
+                        <h3>Chad Brosevelt</h3>
+                        <div class="role">The Everyman</div>
+                        <p>He's you. He's all of us. Watch his journey from bright-eyed optimist to... well, you'll see.</p>
+                    </div>
+                </div>
+                
+                <div class="character-mini">
+                    <span class="character-icon">🤖</span>
+                    <div>
+                        <h3>PosiBot 3000</h3>
+                        <div class="role">Toxic Positivity AI</div>
+                        <p>Eternally cheerful. Physically falling apart. Never acknowledges failure. The guru spirit, personified.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="y">y</span>-it
+                </div>
+                <div class="footer-text">
+                    © 2025 y-it. All rights reserved.
+                </div>
+                <div class="footer-links">
+                    <a href="#">Privacy</a>
+                    <a href="#">Terms</a>
+                    <a href="#">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
