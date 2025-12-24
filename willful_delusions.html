@@ -41,6 +41,21 @@
         }
 
         .life { color: #ccc; }
+
+                .audio-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        audio {
+            width: 100%;
+            max-width: 600px;
+            outline: none;
+        }
+
+        audio::-webkit-media-controls-panel {
+            background: rgba(0,0,0,0.7);
+        }
         .lie { color: #a00; text-shadow: 0 0 30px #f00; }
 
         h2 {
@@ -76,6 +91,15 @@
     <div class="container">
         <h1>A Prologue to a <span class="life">LIFE</span>(<span class="lie">LIE</span>)</h1>
         <h2>Willful Delusions</h2>
+
+                <!-- Audio Player -->
+        <div class="audio-container">
+            <audio controls>
+                <source src="audio/willful_delusions.mp3" type="audio/mpeg">
+                <source src="audio/willful_delusions.ogg" type="audio/ogg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
         
         <div class="prose">
             <p>I was always pretty self-aware. Not in the bullshit, introspective sense people throw around now, but in the jagged, too-honest way where I could see myself leaping from one deluded thought to the next like stones across a river I never wanted to cross. I wasn’t blind to the illusions—I invited them in. I didn’t believe every thought I had, but I gave them room. I let them unpack, settle, stay awhile—like a shitty roommate with a drinking problem. The kind everyone tiptoes around. I was too scared to call them out. Everyone was. No one ever did.</p>
