@@ -469,175 +469,55 @@
 
     <div class="scroll-hint" id="scrollHint">↓ SCROLL ↓</div>
 
+    <audio id="narrationAudio" src="willful-delusions-audio.mp3" preload="auto"></audio>
+    
     <script>
-        // Web Speech API for text-to-speech
         const playBtn = document.getElementById('playBtn');
         const speedSlider = document.getElementById('speedSlider');
         const speedValue = document.getElementById('speedValue');
-        const prose = document.getElementById('prose');
         const progressBar = document.getElementById('progressBar');
         const scrollHint = document.getElementById('scrollHint');
+        const audio = document.getElementById('narrationAudio');
         
-        let synth = window.speechSynthesis;
-        let utterances = [];
-        let currentIndex = 0;
         let isPlaying = false;
-        let currentRate = 1.0;
 
-        // Text content for narration
-        const paragraphs = [
-            "I was always pretty self-aware. Not in the bullshit, introspective sense people throw around now, but in the jagged, too-honest way where I could see myself leaping from one deluded thought to the next like stones across a river I never wanted to cross. I wasn't blind to the illusions—I invited them in. I didn't believe every thought I had, but I gave them room. I let them unpack, settle, stay awhile—like a shitty roommate with a drinking problem. The kind everyone tiptoes around. I was too scared to call them out. Everyone was. No one ever did.",
-            
-            "And I'm not even sure when it hit me. Certainly earlier than I'll admit. But when it did, there was no maybe about it: they weren't illusions. They were willful delusions. Treated like lies of necessity. I chose to believe them—because how could they be doubted, if I carried the weight, and I had the will?",
-            
-            "That wasn't the foundation—that was something learned, something layered on top of what had already been there. Not just not forming. But solid concrete. Unchangeable. Irrefutable. It wasn't a skill. Not even a reflex. It was a bitter, utter plight of existence—one that holds someone so deeply within what could only be their own genuine nature—the kind that demands a person tell on themselves time and time again—as if the confession could somehow prevent the damage before it happened. As if saying it out loud rewound time, made it right, made it not real yet. As if it wasn't coming from after the fact.",
-            
-            "Because underneath it all, I am—undeniably—genuine. Empathic. Powerful in ways that can't be stripped or shaken loose. That isn't opinion. That's bone-deep. That's who I am. But I was scared. Scared of a world I didn't understand, one that didn't know what to do with someone like me, someone who didn't know how to fake it. Someone who, no matter what, couldn't figure out how to detach. Someone that was never understood.",
-            
-            "So I learned to protect myself. Through a truth that felt right. A truth that stood so steadfast in my genuine nature, there was no room for doubt. I'd love to say it was a clever angle of deception—a self-deprecating flourish of consciousness or decision. But the truth is, I don't know where it came from. The deprecation of self. The suffering. The pain of humanity. The left-hand nature of my existence. That's what I believe led to the bulletproof status of my deception.",
-            
-            "No—more than that. It was the glue.",
-            
-            "Through the overly flawed execution of my misinterpreted self, the bold confidence of my genuine malexistence the glue that held whatever mask I chose to bear was born. A sincere and unforced presentation of my unrehearsed, ill-timed, absolutely wholeheartedly apologetic self.",
-            
-            "So I made wounds look like choices. That's how I survived. Somewhere in there, I felt so strongly—and feared hurting others so much—that I'd tell on myself with regularity. As if confession could prevent the damage before it happened. As if being honest about the lie made it less of one. I needed to control the narrative. I needed to make fun of myself, humiliate, absolutely annihilate myself before anyone else could utter anything even nearing an insult. Arrogant. Loquacious. Trying to win the room with my own faults and failures—were they real or contrived? To this day I don't even know.",
-            
-            "I told a story of transparency and vulnerability. It touched the heartstrings with origins in my own suffering and pain. They were truths dressed in shadow. They vouched for anything questionable to come—again, how could they not, the way I carried them so?",
-            
-            "That's why they had to be willful. That's why they worked."
-        ];
-
-        // Initialize utterances
-        function initUtterances() {
-            utterances = paragraphs.map((text, index) => {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.rate = currentRate;
-                utterance.pitch = 0.95;
-                utterance.volume = 1;
-                
-                // Select a good voice if available
-                const voices = synth.getVoices();
-                const preferredVoice = voices.find(v => 
-                    v.name.includes('Daniel') || 
-                    v.name.includes('Alex') || 
-                    v.name.includes('Samantha') ||
-                    v.lang.startsWith('en')
-                );
-                if (preferredVoice) utterance.voice = preferredVoice;
-
-                utterance.onstart = () => highlightParagraph(index);
-                utterance.onend = () => {
-                    removeHighlight(index);
-                    if (index < paragraphs.length - 1) {
-                        currentIndex = index + 1;
-                        updateProgress();
-                        synth.speak(utterances[currentIndex]);
-                    } else {
-                        stopNarration();
-                    }
-                };
-                
-                return utterance;
-            });
-        }
-
-        // Wait for voices to load
-        if (synth.onvoiceschanged !== undefined) {
-            synth.onvoiceschanged = initUtterances;
-        }
-        initUtterances();
-
-        function highlightParagraph(index) {
-            const p = document.getElementById(`p${index + 1}`);
-            if (p) {
-                p.classList.add('reading-highlight');
-                p.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }
-
-        function removeHighlight(index) {
-            const p = document.getElementById(`p${index + 1}`);
-            if (p) p.classList.remove('reading-highlight');
-        }
-
-        function updateProgress() {
-            const progress = ((currentIndex + 1) / paragraphs.length) * 100;
-            progressBar.style.width = `${progress}%`;
-        }
-
-        function startNarration() {
-            if (!synth) {
-                alert('Speech synthesis not supported in this browser.');
-                return;
-            }
-            
-            synth.cancel();
-            initUtterances(); // Reinitialize with current rate
-            isPlaying = true;
-            playBtn.classList.add('playing');
-            synth.speak(utterances[currentIndex]);
-            updateProgress();
-        }
-
-        function pauseNarration() {
-            synth.pause();
-            isPlaying = false;
-            playBtn.classList.remove('playing');
-        }
-
-        function resumeNarration() {
-            synth.resume();
-            isPlaying = true;
-            playBtn.classList.add('playing');
-        }
-
-        function stopNarration() {
-            synth.cancel();
-            isPlaying = false;
-            currentIndex = 0;
-            playBtn.classList.remove('playing');
-            progressBar.style.width = '0%';
-            document.querySelectorAll('.reading-highlight').forEach(el => {
-                el.classList.remove('reading-highlight');
-            });
-        }
-
+        // Play/Pause toggle
         playBtn.addEventListener('click', () => {
             if (!isPlaying) {
-                if (synth.paused) {
-                    resumeNarration();
-                } else {
-                    startNarration();
-                }
+                audio.play();
+                isPlaying = true;
+                playBtn.classList.add('playing');
             } else {
-                pauseNarration();
+                audio.pause();
+                isPlaying = false;
+                playBtn.classList.remove('playing');
             }
         });
 
+        // Update progress bar with audio time
+        audio.addEventListener('timeupdate', () => {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            progressBar.style.width = `${progress}%`;
+        });
+
+        // Reset when audio ends
+        audio.addEventListener('ended', () => {
+            isPlaying = false;
+            playBtn.classList.remove('playing');
+            progressBar.style.width = '0%';
+        });
+
+        // Speed control
         speedSlider.addEventListener('input', (e) => {
-            currentRate = parseFloat(e.target.value);
-            speedValue.textContent = `${currentRate.toFixed(1)}x`;
-            
-            // If playing, restart with new rate
-            if (isPlaying) {
-                synth.cancel();
-                initUtterances();
-                synth.speak(utterances[currentIndex]);
-            }
+            const rate = parseFloat(e.target.value);
+            speedValue.textContent = `${rate.toFixed(1)}x`;
+            audio.playbackRate = rate;
         });
 
         // Hide scroll hint after scrolling
         window.addEventListener('scroll', () => {
             if (window.scrollY > 200) {
                 scrollHint.style.opacity = '0';
-            }
-        });
-
-        // Scroll progress
-        window.addEventListener('scroll', () => {
-            if (!isPlaying) {
-                const scrollPercent = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
-                progressBar.style.width = `${scrollPercent}%`;
             }
         });
     </script>
